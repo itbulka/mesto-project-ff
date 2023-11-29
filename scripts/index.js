@@ -5,8 +5,7 @@ const cardTemplate = document.querySelector('#card-template').content;
 const placesList = document.querySelector('.places__list');
 
 // @todo: Функция создания карточки
-// @todo: Добавить еще один параметр в виде колбека
-const createCard = ({name, link}) => {
+const createCard = ({name, link}, deleteCard) => {
     const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
     cardElement.querySelector('.card__image').src = link;
     cardElement.querySelector('.card__title').textContent = name;
@@ -20,7 +19,7 @@ const deleteCard = cardElement => cardElement.remove();
 // @todo: Вывести карточки на страницу
 function loadCards() {
     initialCards.forEach(item => {
-        placesList.append(createCard(item));
+        placesList.append(createCard(item, deleteCard));
     })
 }
 
