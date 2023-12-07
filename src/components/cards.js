@@ -24,3 +24,19 @@ const initialCards = [
       link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg",
     }
 ];
+
+const createCard = (cardTemplate, {name, link}, deleteCard) => {
+    const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
+    cardElement.querySelector('.card__image').src = link;
+    cardElement.querySelector('.card__title').textContent = name;
+    cardElement.querySelector('.card__delete-button').addEventListener('click', () => deleteCard(cardElement));
+    return cardElement;
+}
+
+const deleteCard = cardElement => cardElement.remove();
+
+export default function loadCards(placesList, cardTemplate) {
+    initialCards.forEach(item => {
+        placesList.append(createCard(cardTemplate, item, deleteCard));
+    })
+}
