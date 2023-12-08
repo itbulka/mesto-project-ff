@@ -1,29 +1,29 @@
+function closePopup(popup) {
+    if (popup.classList.contains('popup_is-opened')) {
+        popup.classList.remove('popup_is-opened');
+    }
+}
 
-function closePopupForOverlay(evt, popup) {
+const closePopupOverlay = (evt, popup) => {
     if (evt.target.classList.contains('popup')) {
-        popup.classList.remove('popup_is-opened');
+        closePopup(popup);
     }
 }
 
-function closePopupKeyDown(evt, popup) {
-    console.log(evt.key);
-    if (evt.key === 'Escape' && popup.classList.contains('popup_is-opened')) {
-        console.log('close')
-        popup.classList.remove('popup_is-opened');
-        evt.target.removeEventListener('keydown', closePopupKeyDown);
-    }
-}
-
-function closePopupForButton(evt, popup) {
-    if(evt.target.classList.contains('popup__close')) {
-        popup.classList.remove('popup_is-opened');
+const closePopupEscape = (evt, popup) => {
+    console.log('Enter function closePopupEscape');
+    if (evt.key === 'Escape') {
+        closePopup(popup);
+        document.removeEventListener('keydown', evt => closePopupEscape(evt, popup))
     }
 }
 
 function openPopup(popup) {
     if (!popup.classList.contains('popup_is-opened')) {
         popup.classList.add('popup_is-opened');
+        popup.addEventListener('click', evt => closePopupOverlay(evt, popup) )
+        document.addEventListener('keydown', evt => closePopupEscape(evt, popup) )
     }
 }
 
-export { openPopup, closePopupForButton, closePopupKeyDown, closePopupForOverlay }
+export { openPopup, closePopup }
