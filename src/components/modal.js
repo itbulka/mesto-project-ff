@@ -1,6 +1,7 @@
 function closePopup(popup) {
     if (popup.classList.contains('popup_is-opened')) {
         popup.classList.remove('popup_is-opened');
+        document.removeEventListener('keydown', closePopupEscape)
     }
 }
 
@@ -10,11 +11,11 @@ const closePopupOverlay = (evt, popup) => {
     }
 }
 
-const closePopupEscape = (evt, popup) => {
+const closePopupEscape = (evt) => {
     console.log('Enter function closePopupEscape');
     if (evt.key === 'Escape') {
-        closePopup(popup);
-        document.removeEventListener('keydown', evt => closePopupEscape(evt, popup))
+        const popupElement = document.querySelector('.popup_is-opened')
+        closePopup(popupElement);
     }
 }
 
@@ -22,7 +23,7 @@ function openPopup(popup) {
     if (!popup.classList.contains('popup_is-opened')) {
         popup.classList.add('popup_is-opened');
         popup.addEventListener('click', evt => closePopupOverlay(evt, popup) )
-        document.addEventListener('keydown', evt => closePopupEscape(evt, popup) )
+        document.addEventListener('keydown', closePopupEscape)
     }
 }
 

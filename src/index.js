@@ -5,9 +5,10 @@ import { createCard, deleteCard, likeCard } from './components/card';
 import { openPopup, closePopup } from './components/modal.js';
 
 const placesList = document.querySelector('.places__list');
-
-const editButton = document.querySelector('.profile__edit-button');
-const addButton = document.querySelector('.profile__add-button');
+const profileTitle = document.querySelector('.profile__title');
+const profileDescription = document.querySelector('.profile__description');
+const buttonEdit = document.querySelector('.profile__edit-button');
+const buttonAdd = document.querySelector('.profile__add-button');
 
 const popupEdit = document.querySelector('.popup_type_edit');
 const formEdit = document.forms['edit-profile'];
@@ -24,16 +25,16 @@ const captionPopup = popupImage.querySelector('.popup__caption');
 const imagePopup = popupImage.querySelector('.popup__image');
 
 // Открытие модального окна по нажатию кнопки редактирования
-editButton.addEventListener('click', () => openPopup(popupEdit) );
-const closeButtonPopupEdit = popupEdit.querySelector('.popup__close');
-closeButtonPopupEdit.addEventListener('click', evt => closePopup(popupEdit))
+buttonEdit.addEventListener('click', () => openPopup(popupEdit) );
+const buttonClosePopupEdit = popupEdit.querySelector('.popup__close');
+buttonClosePopupEdit.addEventListener('click', evt => closePopup(popupEdit))
 
-addButton.addEventListener('click', evt => openPopup(popupNewCard));
-const closeButtonPopupNewCard = popupNewCard.querySelector('.popup__close');
-closeButtonPopupNewCard.addEventListener('click', evt => closePopup(popupNewCard))
+buttonAdd.addEventListener('click', evt => openPopup(popupNewCard));
+const buttonClosePopupNewCard = popupNewCard.querySelector('.popup__close');
+buttonClosePopupNewCard.addEventListener('click', evt => closePopup(popupNewCard))
 
-const closePopupImage = popupImage.querySelector('.popup__close');
-closePopupImage.addEventListener('click', evt => closePopup(popupImage));
+const buttonClosePopupImage = popupImage.querySelector('.popup__close');
+buttonClosePopupImage.addEventListener('click', evt => closePopup(popupImage));
 
 function loadCards(placesList) {
     initialCards.forEach(item => {
@@ -58,14 +59,11 @@ function handleFormSubmitAddCard(evt) {
 }
 
 // Редактирование полей через модальное окно
-function handleFormSubmit(evt) {
+function handleFormSubmitEditProfile(evt) {
     evt.preventDefault();
 
     const nameInputValue = nameInputFormEdit.value;
     const descriptionInputValue = descriptionInputFormEdit.value;
-
-    const profileTitle = document.querySelector('.profile__title');
-    const profileDescription = document.querySelector('.profile__description');
 
     profileTitle.textContent = nameInputValue;
     profileDescription.textContent = descriptionInputValue;
@@ -79,10 +77,11 @@ function handleFormSubmit(evt) {
 const handleOpenCard = (name, link) => {
     captionPopup.textContent = name;
     imagePopup.src = link;
+    imagePopup.alt = `На фото ${name}`
     openPopup(popupImage);
 }
 
 loadCards(placesList);
 
-formEdit.addEventListener('submit', handleFormSubmit);
+formEdit.addEventListener('submit', handleFormSubmitEditProfile);
 formNewCard.addEventListener('submit', handleFormSubmitAddCard);
