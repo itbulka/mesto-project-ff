@@ -25,7 +25,12 @@ const captionPopup = popupImage.querySelector('.popup__caption');
 const imagePopup = popupImage.querySelector('.popup__image');
 
 // Открытие модального окна по нажатию кнопки редактирования
-buttonEdit.addEventListener('click', () => openPopup(popupEdit) );
+function handleButtonEdit() {
+    nameInputFormEdit.value = profileTitle.textContent;
+    descriptionInputFormEdit.value = profileDescription.textContent;
+    openPopup(popupEdit)
+}
+buttonEdit.addEventListener('click', () => handleButtonEdit() );
 const buttonClosePopupEdit = popupEdit.querySelector('.popup__close');
 buttonClosePopupEdit.addEventListener('click', evt => closePopup(popupEdit))
 
