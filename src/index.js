@@ -3,6 +3,7 @@ import './pages/index.css';
 import { initialCards } from './components/cards.js';
 import { createCard, deleteCard, likeCard } from './components/card';
 import { openPopup, closePopup } from './components/modal.js';
+import { enableValidation, clearValidation } from './scripts/validation.js';
 
 const placesList = document.querySelector('.places__list');
 const profileTitle = document.querySelector('.profile__title');
@@ -26,6 +27,11 @@ const imagePopup = popupImage.querySelector('.popup__image');
 
 // Открытие модального окна по нажатию кнопки редактирования
 function handleButtonEdit() {
+    clearValidation(formEdit, {
+        inputSelector: '.popup__input',
+        inputErrorClass: 'popup__input_type_error',
+        inputErrorActiveClass: 'popup__input_error-active',
+    });
     nameInputFormEdit.value = profileTitle.textContent;
     descriptionInputFormEdit.value = profileDescription.textContent;
     openPopup(popupEdit)
@@ -34,12 +40,28 @@ buttonEdit.addEventListener('click', () => handleButtonEdit() );
 const buttonClosePopupEdit = popupEdit.querySelector('.popup__close');
 buttonClosePopupEdit.addEventListener('click', evt => closePopup(popupEdit))
 
-buttonAdd.addEventListener('click', evt => openPopup(popupNewCard));
+buttonAdd.addEventListener('click', evt => {
+    clearValidation(formNewCard, {
+        inputSelector: '.popup__input',
+        inputErrorClass: 'popup__input_type_error',
+        inputErrorActiveClass: 'popup__input_error-active',
+    });
+    openPopup(popupNewCard)
+});
 const buttonClosePopupNewCard = popupNewCard.querySelector('.popup__close');
 buttonClosePopupNewCard.addEventListener('click', evt => closePopup(popupNewCard))
 
 const buttonClosePopupImage = popupImage.querySelector('.popup__close');
 buttonClosePopupImage.addEventListener('click', evt => closePopup(popupImage));
+
+enableValidation({
+    formSelector: '.popup__form',
+    inputSelector: '.popup__input',
+    buttonSubmitSelector: '.popup__button',
+    inputErrorClass: 'popup__input_type_error',
+    inputErrorActiveClass: 'popup__input_error-active',
+    buttonSubmitDisableClass: 'popup__button_inactive',
+});
 
 function loadCards(placesList) {
     initialCards.forEach(item => {

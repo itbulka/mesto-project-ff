@@ -1,0 +1,9 @@
+.popup__button_inactive {
+    background-color: transparent;
+    border: rgba(0, 0, 0, .2) solid 1px;
+    color: rgba(0, 0, 0, .2);
+}
+
+.popup__button_inactive:hover {
+    background-color: transparent;
+}
