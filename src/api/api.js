@@ -72,3 +72,18 @@ export const addCard = (name, link) => {
         })
         .catch(err => console.log(err));
 }
+
+export const deleteCard = (cardId) => {
+    return fetch(`${config.url}${config.identifierGroup}/cards/${cardId}`, {
+        method: 'DELETE',
+        headers: {
+            authorization: config.token
+        }
+    })
+        .then(res => {
+            if (res.ok) {
+                return res.json();
+            }
+        })
+        .catch(err => console.log(err));
+}

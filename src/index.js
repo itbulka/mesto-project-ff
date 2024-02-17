@@ -1,12 +1,12 @@
 import './pages/index.css';
 
 import { initialCards } from './components/cards.js';
-import { createCard, deleteCard, likeCard } from './components/card';
+import { createCard, likeCard } from './components/card';
 import { openPopup, closePopup } from './components/modal.js';
 import { enableValidation, clearValidation } from './scripts/validation.js';
 
 // API
-import {getUser, getCards, editUser, addCard } from './api/api.js';
+import {getUser, getCards, editUser, addCard, deleteCard } from './api/api.js';
 
 const placesList = document.querySelector('.places__list');
 const profileTitle = document.querySelector('.profile__title');
@@ -28,13 +28,9 @@ const popupImage = document.querySelector('.popup_type_image');
 const captionPopup = popupImage.querySelector('.popup__caption');
 const imagePopup = popupImage.querySelector('.popup__image');
 
-const initialUser = () => {
-    getUser()
-        .then(user => {
-            profileTitle.textContent = user.name;
-            profileDescription.textContent = user.about;
-        })
-        .catch(err => console.log(err));
+const initialUser = (name, about) => {
+    profileTitle.textContent = name;
+    profileDescription.textContent = about;
 }
 
 // Открытие модального окна по нажатию кнопки редактирования
@@ -75,19 +71,10 @@ enableValidation({
     buttonSubmitDisableClass: 'popup__button_inactive',
 });
 
-function loadCards(placesList) {
-    getCards()
-        .then(cards => {
-            console.log(cards);
-            cards.forEach(card => {
-                placesList.append(createCard(card, deleteCard, likeCard, handleOpenCard));
-            })
-        })
-        .catch(err => console.log(err));
-
-    // initialCards.forEach(item => {
-    //     placesList.append(createCard(item, deleteCard, likeCard, handleOpenCard));
-    // })
+function loadCards(placesList, cards, idUser) {
+    cards.forEach(card => {
+        placesList.append(createCard(card, idUser, handleDeleteCard, likeCard, handleOpenCard));
+    })
 }
 
 function handleFormSubmitAddCard(evt) {
@@ -98,7 +85,8 @@ function handleFormSubmitAddCard(evt) {
 
     addCard(nameInputValue, urlInputValue)
         .then(cardData => {
-            const card = createCard({ name: cardData.name, link: cardData.url }, deleteCard, likeCard, handleOpenCard);
+            const idUser = cardData.owner['_id'];
+            const card = createCard({ name: cardData.name, link: cardData.url }, idUser, handleDeleteCard, likeCard, handleOpenCard);
             placesList.prepend(card);
         })
         .catch(err => console.log(err));
@@ -136,8 +124,20 @@ const handleOpenCard = (name, link) => {
     openPopup(popupImage);
 }
 
-initialUser();
-loadCards(placesList);
+const handleDeleteCard = (cardElement, idCard) => {
+    deleteCard(idCard)
+        .then((res) => {
+            cardElement.remove();
+        })
+        .catch(err => console.log(err));
+}
+
+Promise.all([getUser(), getCards()])
+    .then(([user, cards]) => {
+        initialUser(user.name, user.about);
+        loadCards(placesList, cards, user['_id']);
+    })
+    .catch(err => console.log(err));
 
 formEdit.addEventListener('submit', handleFormSubmitEditProfile);
 formNewCard.addEventListener('submit', handleFormSubmitAddCard);
