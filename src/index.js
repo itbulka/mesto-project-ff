@@ -78,6 +78,7 @@ enableValidation({
 function loadCards(placesList) {
     getCards()
         .then(cards => {
+            console.log(cards);
             cards.forEach(card => {
                 placesList.append(createCard(card, deleteCard, likeCard, handleOpenCard));
             })
