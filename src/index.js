@@ -1,12 +1,11 @@
 import './pages/index.css';
 
-import { initialCards } from './components/cards.js';
-import { createCard, likeCard } from './components/card';
+import { createCard } from './components/card';
 import { openPopup, closePopup } from './components/modal.js';
 import { enableValidation, clearValidation } from './scripts/validation.js';
 
 // API
-import {getUser, getCards, editUser, addCard, deleteCard } from './api/api.js';
+import {getUser, getCards, editUser, addCard, deleteCard, addLikeCard, removeLikeCard } from './api/api.js';
 
 const placesList = document.querySelector('.places__list');
 const profileTitle = document.querySelector('.profile__title');
@@ -71,9 +70,9 @@ enableValidation({
     buttonSubmitDisableClass: 'popup__button_inactive',
 });
 
-function loadCards(placesList, cards, idUser) {
+function loadCards(placesList, cards, user) {
     cards.forEach(card => {
-        placesList.append(createCard(card, idUser, handleDeleteCard, likeCard, handleOpenCard));
+        placesList.append(createCard(card, user, handleDeleteCard, handleLikeCard, handleOpenCard));
     })
 }
 
@@ -85,8 +84,8 @@ function handleFormSubmitAddCard(evt) {
 
     addCard(nameInputValue, urlInputValue)
         .then(cardData => {
-            const idUser = cardData.owner['_id'];
-            const card = createCard({ name: cardData.name, link: cardData.url }, idUser, handleDeleteCard, likeCard, handleOpenCard);
+            const user = cardData.owner;
+            const card = createCard({ name: cardData.name, link: cardData.url }, user, handleDeleteCard, handleLikeCard, handleOpenCard);
             placesList.prepend(card);
         })
         .catch(err => console.log(err));
@@ -132,10 +131,28 @@ const handleDeleteCard = (cardElement, idCard) => {
         .catch(err => console.log(err));
 }
 
+const handleLikeCard = (evt, cardElement, idCard) => {
+    if (evt.target.classList.contains('card__like-button') && evt.target.classList.contains('card__like-button_is-active')) {
+        removeLikeCard(idCard)
+            .then((card) => {
+                cardElement.querySelector('.card__like-counter').textContent = card.likes.length;
+                evt.target.classList.remove('card__like-button_is-active');
+            })
+            .catch(err => console.log(err));
+    } else {
+        addLikeCard(idCard)
+            .then((card) => {
+                cardElement.querySelector('.card__like-counter').textContent = card.likes.length;
+                evt.target.classList.add('card__like-button_is-active');
+            })
+            .catch(err => console.log(err));
+    }
+}
+
 Promise.all([getUser(), getCards()])
     .then(([user, cards]) => {
         initialUser(user.name, user.about);
-        loadCards(placesList, cards, user['_id']);
+        loadCards(placesList, cards, user);
     })
     .catch(err => console.log(err));
 

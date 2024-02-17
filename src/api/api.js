@@ -87,3 +87,33 @@ export const deleteCard = (cardId) => {
         })
         .catch(err => console.log(err));
 }
+
+export const addLikeCard = (cardId) => {
+    return fetch(`${config.url}${config.identifierGroup}/cards/likes/${cardId}`, {
+        method: 'PUT',
+        headers: {
+            authorization: config.token
+        }
+    })
+        .then(res => {
+            if (res.ok) {
+                return res.json();
+            }
+        })
+        .catch(err => console.log(err));
+}
+
+export const removeLikeCard = (cardId) => {
+    return fetch(`${config.url}${config.identifierGroup}/cards/likes/${cardId}`, {
+        method: 'DELETE',
+        headers: {
+            authorization: config.token
+        }
+    })
+        .then(res => {
+            if (res.ok) {
+                return res.json();
+            }
+        })
+        .catch(err => console.log(err));
+}
