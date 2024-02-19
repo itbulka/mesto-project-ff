@@ -5,11 +5,12 @@ import { openPopup, closePopup } from './components/modal.js';
 import { enableValidation, clearValidation } from './scripts/validation.js';
 
 // API
-import {getUser, getCards, editUser, addCard, deleteCard, addLikeCard, removeLikeCard } from './api/api.js';
+import {getUser, getCards, editUser, addCard, deleteCard, addLikeCard, removeLikeCard, editAvatarProfile } from './api/api.js';
 
 const placesList = document.querySelector('.places__list');
 const profileTitle = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
+const profileEditAvatar = document.querySelector('.profile__image');
 const buttonEdit = document.querySelector('.profile__edit-button');
 const buttonAdd = document.querySelector('.profile__add-button');
 
@@ -27,10 +28,26 @@ const popupImage = document.querySelector('.popup_type_image');
 const captionPopup = popupImage.querySelector('.popup__caption');
 const imagePopup = popupImage.querySelector('.popup__image');
 
-const initialUser = (name, about) => {
+const popupEditAvatar = document.querySelector('.popup_type_edit-avatar');
+const formEditAvatar = document.forms['edit-avatar'];
+const urlInputFormEditAvatar = formEditAvatar.elements['link'];
+
+const initialUser = (name, about, avatar) => {
     profileTitle.textContent = name;
     profileDescription.textContent = about;
+    profileEditAvatar.style.backgroundImage = `url('${avatar}')`;
 }
+
+const handleEditAvatar = () => {
+    clearValidation(formEditAvatar, {
+        inputSelector: '.popup__input',
+        inputErrorClass: 'popup__input_type_error',
+        inputErrorActiveClass: 'popup__input_error-active',
+    });
+    urlInputFormEditAvatar.value = '';
+    openPopup(popupEditAvatar);
+}
+profileEditAvatar.addEventListener('click', () => handleEditAvatar());
 
 // Открытие модального окна по нажатию кнопки редактирования
 function handleButtonEdit() {
@@ -60,6 +77,9 @@ buttonClosePopupNewCard.addEventListener('click', evt => closePopup(popupNewCard
 
 const buttonClosePopupImage = popupImage.querySelector('.popup__close');
 buttonClosePopupImage.addEventListener('click', evt => closePopup(popupImage));
+
+const buttonClosePopupEditAvatar = popupEditAvatar.querySelector('.popup__close');
+buttonClosePopupEditAvatar.addEventListener('click', () => closePopup(popupEditAvatar));
 
 enableValidation({
     formSelector: '.popup__form',
@@ -116,6 +136,23 @@ function handleFormSubmitEditProfile(evt) {
     closePopup(popupEdit);
 }
 
+function handleFormSubmitEditAvatar(evt) {
+    evt.preventDefault();
+
+    const urlInputValue = urlInputFormEditAvatar.value;
+
+    editAvatarProfile(urlInputValue)
+        .then(avatar => {
+            profileEditAvatar.style.backgroundImage = `url('${urlInputValue}')`;
+        })
+        .catch(err => console.log(err));
+
+    urlInputFormEditAvatar.value = '';
+
+    closePopup(popupEditAvatar);
+
+}
+
 const handleOpenCard = (name, link) => {
     captionPopup.textContent = name;
     imagePopup.src = link;
@@ -151,10 +188,11 @@ const handleLikeCard = (evt, cardElement, idCard) => {
 
 Promise.all([getUser(), getCards()])
     .then(([user, cards]) => {
-        initialUser(user.name, user.about);
+        initialUser(user.name, user.about, user.avatar);
         loadCards(placesList, cards, user);
     })
     .catch(err => console.log(err));
 
 formEdit.addEventListener('submit', handleFormSubmitEditProfile);
 formNewCard.addEventListener('submit', handleFormSubmitAddCard);
+formEditAvatar.addEventListener('submit', handleFormSubmitEditAvatar);

@@ -117,3 +117,23 @@ export const removeLikeCard = (cardId) => {
         })
         .catch(err => console.log(err));
 }
+
+export const editAvatarProfile = (urlAvatar) => {
+    return fetch(`${config.url}${config.identifierGroup}/users/me/avatar`, {
+        method: 'PATCH',
+        headers: {
+            authorization: config.token,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            avatar: urlAvatar
+        })
+    })
+        .then(res => {
+            console.log(res);
+            if (res.ok) {
+                return res.json();
+            }
+        })
+        .catch(err => console.log(err));
+}
