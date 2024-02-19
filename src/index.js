@@ -98,6 +98,7 @@ function loadCards(placesList, cards, user) {
 
 function handleFormSubmitAddCard(evt) {
     evt.preventDefault();
+    evt.submitter.textContent = 'Сохранение...';
 
     const nameInputValue = nameInputFormNewCard.value;
     const urlInputValue = urlInputFormNewCard.value;
@@ -105,20 +106,22 @@ function handleFormSubmitAddCard(evt) {
     addCard(nameInputValue, urlInputValue)
         .then(cardData => {
             const user = cardData.owner;
-            const card = createCard({ name: cardData.name, link: cardData.url }, user, handleDeleteCard, handleLikeCard, handleOpenCard);
+            const card = createCard(cardData, user, handleDeleteCard, handleLikeCard, handleOpenCard);
             placesList.prepend(card);
         })
-        .catch(err => console.log(err));
-
-    nameInputFormNewCard.value = '';
-    urlInputFormNewCard.value = '';
-
-    closePopup(popupNewCard);
+        .catch(err => console.log(err))
+        .finally(() => {
+            nameInputFormNewCard.value = '';
+            urlInputFormNewCard.value = '';
+            evt.submitter.textContent = 'Сохранить';
+            closePopup(popupNewCard);
+        });
 }
 
 // Редактирование полей через модальное окно
 function handleFormSubmitEditProfile(evt) {
     evt.preventDefault();
+    evt.submitter.textContent = 'Сохранение...';
 
     const nameInputValue = nameInputFormEdit.value;
     const descriptionInputValue = descriptionInputFormEdit.value;
@@ -128,16 +131,18 @@ function handleFormSubmitEditProfile(evt) {
             profileTitle.textContent = updateUser.name;
             profileDescription.textContent = updateUser.about;
         })
-        .catch(err => console.log(err));
-
-    nameInputFormEdit.value = '';
-    descriptionInputFormEdit.value = ''
-
-    closePopup(popupEdit);
+        .catch(err => console.log(err))
+        .finally(() => {
+            nameInputFormEdit.value = '';
+            descriptionInputFormEdit.value = ''
+            evt.submitter.textContent = 'Сохранить';
+            closePopup(popupEdit);
+        });
 }
 
 function handleFormSubmitEditAvatar(evt) {
     evt.preventDefault();
+    evt.submitter.textContent = 'Сохранение...';
 
     const urlInputValue = urlInputFormEditAvatar.value;
 
@@ -145,12 +150,12 @@ function handleFormSubmitEditAvatar(evt) {
         .then(avatar => {
             profileEditAvatar.style.backgroundImage = `url('${urlInputValue}')`;
         })
-        .catch(err => console.log(err));
-
-    urlInputFormEditAvatar.value = '';
-
-    closePopup(popupEditAvatar);
-
+        .catch(err => console.log(err))
+        .finally(() => {
+            urlInputFormEditAvatar.value = '';
+            evt.submitter.textContent = 'Сохранить';
+            closePopup(popupEditAvatar);
+        });
 }
 
 const handleOpenCard = (name, link) => {
