@@ -4,19 +4,21 @@ const config = {
     identifierGroup: "cohort-magistr-2",
 }
 
+const handleResponse = res => {
+    if (res.ok) {
+        return res.json();
+    } else {
+        return Promise.reject(`Status ${res.status}`);
+    }
+}
+
 // Метод для получения данных пользвоателя
 export const getUser = () => {
     return fetch(`${config.url}${config.identifierGroup}/users/me`, {
         headers: {
             authorization: config.token
         }
-    })
-        .then(res => {
-            if (res.ok) {
-                return res.json()
-            }
-        })
-        .catch(err => console.log(err));
+    }).then(handleResponse);
 }
 
 export const editUser = (name, about) => {
@@ -30,13 +32,7 @@ export const editUser = (name, about) => {
             name: name,
             about: about
         })
-    })
-        .then(res => {
-            if (res.ok) {
-                return res.json()
-            }
-        })
-        .catch(err => console.log(err));
+    }).then(handleResponse);
 }
 
 export const getCards = () => {
@@ -44,13 +40,7 @@ export const getCards = () => {
         headers: {
             authorization: config.token
         }
-    })
-        .then(res => {
-            if (res.ok) {
-                return res.json()
-            }
-        })
-        .catch(err => console.log(err));
+    }).then(handleResponse);
 }
 
 export const addCard = (name, link) => {
@@ -64,13 +54,7 @@ export const addCard = (name, link) => {
             name: name,
             link: link
         })
-    })
-        .then(res => {
-            if (res.ok) {
-                return res.json()
-            }
-        })
-        .catch(err => console.log(err));
+    }).then(handleResponse);
 }
 
 export const deleteCard = (cardId) => {
@@ -79,13 +63,7 @@ export const deleteCard = (cardId) => {
         headers: {
             authorization: config.token
         }
-    })
-        .then(res => {
-            if (res.ok) {
-                return res.json();
-            }
-        })
-        .catch(err => console.log(err));
+    }).then(handleResponse);
 }
 
 export const addLikeCard = (cardId) => {
@@ -94,13 +72,7 @@ export const addLikeCard = (cardId) => {
         headers: {
             authorization: config.token
         }
-    })
-        .then(res => {
-            if (res.ok) {
-                return res.json();
-            }
-        })
-        .catch(err => console.log(err));
+    }).then(handleResponse);
 }
 
 export const removeLikeCard = (cardId) => {
@@ -109,13 +81,7 @@ export const removeLikeCard = (cardId) => {
         headers: {
             authorization: config.token
         }
-    })
-        .then(res => {
-            if (res.ok) {
-                return res.json();
-            }
-        })
-        .catch(err => console.log(err));
+    }).then(handleResponse);
 }
 
 export const editAvatarProfile = (urlAvatar) => {
@@ -128,12 +94,5 @@ export const editAvatarProfile = (urlAvatar) => {
         body: JSON.stringify({
             avatar: urlAvatar
         })
-    })
-        .then(res => {
-            console.log(res);
-            if (res.ok) {
-                return res.json();
-            }
-        })
-        .catch(err => console.log(err));
+    }).then(handleResponse);
 }

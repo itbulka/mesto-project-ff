@@ -67,6 +67,9 @@ export const enableValidation = (config) => {
 
 export const clearValidation = (formElement, configValidation) => {
     const inputList = Array.from(formElement.querySelectorAll(configValidation.inputSelector));
+    const buttonSubmitElement = formElement.querySelector(configValidation.buttonSubmitSelector);
+    buttonSubmitElement.disabled = true;
+    buttonSubmitElement.classList.add(configValidation.buttonSubmitDisableClass);
     inputList.forEach(inputElement => {
         hideError(formElement, inputElement, configValidation);
     })

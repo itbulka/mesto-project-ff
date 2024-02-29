@@ -32,6 +32,14 @@ const popupEditAvatar = document.querySelector('.popup_type_edit-avatar');
 const formEditAvatar = document.forms['edit-avatar'];
 const urlInputFormEditAvatar = formEditAvatar.elements['link'];
 
+const configValidation = {
+    inputSelector: '.popup__input',
+    inputErrorClass: 'popup__input_type_error',
+    inputErrorActiveClass: 'popup__input_error-active',
+    buttonSubmitSelector: '.popup__button',
+    buttonSubmitDisableClass: 'popup__button_inactive',
+}
+
 const initialUser = (name, about, avatar) => {
     profileTitle.textContent = name;
     profileDescription.textContent = about;
@@ -39,11 +47,7 @@ const initialUser = (name, about, avatar) => {
 }
 
 const handleEditAvatar = () => {
-    clearValidation(formEditAvatar, {
-        inputSelector: '.popup__input',
-        inputErrorClass: 'popup__input_type_error',
-        inputErrorActiveClass: 'popup__input_error-active',
-    });
+    clearValidation(formEditAvatar, configValidation);
     urlInputFormEditAvatar.value = '';
     openPopup(popupEditAvatar);
 }
@@ -51,11 +55,7 @@ profileEditAvatar.addEventListener('click', () => handleEditAvatar());
 
 // Открытие модального окна по нажатию кнопки редактирования
 function handleButtonEdit() {
-    clearValidation(formEdit, {
-        inputSelector: '.popup__input',
-        inputErrorClass: 'popup__input_type_error',
-        inputErrorActiveClass: 'popup__input_error-active',
-    });
+    clearValidation(formEdit, configValidation);
     nameInputFormEdit.value = profileTitle.textContent;
     descriptionInputFormEdit.value = profileDescription.textContent;
     openPopup(popupEdit)
@@ -65,11 +65,7 @@ const buttonClosePopupEdit = popupEdit.querySelector('.popup__close');
 buttonClosePopupEdit.addEventListener('click', evt => closePopup(popupEdit))
 
 buttonAdd.addEventListener('click', evt => {
-    clearValidation(formNewCard, {
-        inputSelector: '.popup__input',
-        inputErrorClass: 'popup__input_type_error',
-        inputErrorActiveClass: 'popup__input_error-active',
-    });
+    clearValidation(formNewCard, configValidation);
     openPopup(popupNewCard)
 });
 const buttonClosePopupNewCard = popupNewCard.querySelector('.popup__close');
@@ -174,21 +170,13 @@ const handleDeleteCard = (cardElement, idCard) => {
 }
 
 const handleLikeCard = (evt, cardElement, idCard) => {
-    if (evt.target.classList.contains('card__like-button') && evt.target.classList.contains('card__like-button_is-active')) {
-        removeLikeCard(idCard)
-            .then((card) => {
-                cardElement.querySelector('.card__like-counter').textContent = card.likes.length;
-                evt.target.classList.remove('card__like-button_is-active');
-            })
-            .catch(err => console.log(err));
-    } else {
-        addLikeCard(idCard)
-            .then((card) => {
-                cardElement.querySelector('.card__like-counter').textContent = card.likes.length;
-                evt.target.classList.add('card__like-button_is-active');
-            })
-            .catch(err => console.log(err));
-    }
+    const likeMethod = evt.target.classList.contains('card__like-button') && evt.target.classList.contains('card__like-button_is-active') ? removeLikeCard : addLikeCard;
+    likeMethod(idCard)
+        .then((card) => {
+            cardElement.querySelector('.card__like-counter').textContent = card.likes.length;
+            evt.target.classList.toggle('card__like-button_is-active');
+        })
+        .catch(err => console.log(err));
 }
 
 Promise.all([getUser(), getCards()])

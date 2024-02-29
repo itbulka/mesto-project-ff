@@ -5,9 +5,9 @@ function closePopup(popup) {
     }
 }
 
-const closePopupOverlay = (evt, popup) => {
+const closePopupOverlay = (evt) => {
     if (evt.target.classList.contains('popup')) {
-        closePopup(popup);
+        closePopup(evt.currentTarget);
     }
 }
 
@@ -22,7 +22,7 @@ const closePopupEscape = (evt) => {
 function openPopup(popup) {
     if (!popup.classList.contains('popup_is-opened')) {
         popup.classList.add('popup_is-opened');
-        popup.addEventListener('click', evt => closePopupOverlay(evt, popup) )
+        popup.addEventListener('click', closePopupOverlay)
         document.addEventListener('keydown', closePopupEscape)
     }
 }
